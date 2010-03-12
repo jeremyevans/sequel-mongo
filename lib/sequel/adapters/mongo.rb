@@ -82,15 +82,13 @@ module Sequel
         end
       end
       
-      UPDATE_OPTS = {:safe=>true}
+      UPDATE_OPTS = {:safe=>true, :multi=>true}
       def update(values)
         s = selector
         h = {'$set'=>mongo_db_hash(values)}
-        o = UPDATE_OPTS
-        o = o.merge(:multi=>true) if s.empty?
         collection do |c|
-          log("update(#{s.inspect}, #{h.inspect}, #{o.inspect})")
-          v = c.update(s, h, o)
+          log("update(#{s.inspect}, #{h.inspect}, #{UPDATE_OPTS.inspect})")
+          v = c.update(s, h, UPDATE_OPTS)
           UPDATE_OPTS[:safe] ? v.first.first["n"] : v
         end
       end
